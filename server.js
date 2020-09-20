@@ -1,7 +1,8 @@
 
 // Create a route that the front-end can request data from. 
 //require data
-const { animals } = require('./data/animals');
+const apiRoutes = require('./routes/apiRoutes');
+const htmlRoutes = require('./routes/htmlRoutes');
 
 //initiate express
 const express = require('express');
@@ -11,16 +12,13 @@ const PORT = process.env.PORT || 3001;
 //initiate server
 const app = express();
 
-//add route to data
-//route the client will have to fetch from
-//second is a callback function
-app.get('/api/animals', (req, res) => {
-    //using the send() method from the res parameter (short for response) to send the string Hello! to our client
-    res.json(animals);
-  });
+//middleware
+//give access to frontside
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use('/api', apiRoutes);
+app.use('/', htmlRoutes);
 
-//make our server listen
-app.listen(PORT, () => {
-    console.log(`API server now on port ${PORT}!`);
-  });
-  
+//make server listen
+app.listen(PORT, () => {console.log(`API server now on port ${PORT}!`);});
